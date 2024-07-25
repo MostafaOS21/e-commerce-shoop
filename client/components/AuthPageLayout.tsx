@@ -5,11 +5,11 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { LogInForm } from "@/components/forms/LogInForm";
 
-export default function LogIn() {
+const AuthPageLayout = () => {
   return (
     <div className="bg-gray-100 dark:bg-slate-900 section-h-full w-full">
       <div className="container grid grid-cols-1 xl:grid-cols-2 gap-8 h-full py-5">
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex xl:block flex-col justify-between h-full">
           <div>
             <p className="text-lg text-center">Welcome Back!</p>
 
@@ -70,4 +70,5 @@ export default function LogIn() {
       </div>
     </div>
   );
-}
+};
+export default AuthPageLayout;
