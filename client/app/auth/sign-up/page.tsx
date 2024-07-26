@@ -1,5 +1,5 @@
-import React from "react";
+import AuthPageLayout from "@/components/AuthPageLayout";
 
 export default function SignUp() {
-  return <div></div>;
+  return <AuthPageLayout type="sign-up" />;
 }
