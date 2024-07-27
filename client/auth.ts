@@ -14,9 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         name: {},
         email: {},
-        password: {},
-        confirmPassword: {},
-        type: {},
+        avatar: {},
       },
       // @ts-ignore
       authorize: async (credentials) => credentials,
@@ -29,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.username = user.username;
         token.name = user.name;
         token.email = user.email;
-        token.image = user.image;
+        token.avatar = user.avatar;
         token.createdAt = user.createdAt;
       }
 

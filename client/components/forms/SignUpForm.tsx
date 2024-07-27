@@ -69,8 +69,8 @@ export function SignUpForm() {
       }
 
       toast(err);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   return (

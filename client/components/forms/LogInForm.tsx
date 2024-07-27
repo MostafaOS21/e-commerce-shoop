@@ -13,6 +13,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import SubmitButton from "../SubmitButton";
+import { baseApi } from "@/lib/baseApi";
+import { useState } from "react";
+import { ApiResponse } from "@/types/api";
+import { IApiUser } from "@/types/user";
+import { logIn } from "@/lib/actions/auth.actions";
+import { useRouter } from "next/navigation";
+import { ToastAction } from "@radix-ui/react-toast";
+import { ApiError } from "@/lib/api-error";
+import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -20,6 +29,10 @@ const formSchema = z.object({
 });
 
 export function LogInForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,10 +43,33 @@ export function LogInForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsLoading(true);
+
+      const res = await baseApi.post("/auth/log-in", values);
+      const data: ApiResponse<IApiUser> = await res.data;
+
+      await logIn(data.data);
+
+      router.push("/");
+    } catch (error) {
+      let err: any = ApiError.generate(error);
+
+      if (err.status === 404) {
+        err.action = (
+          <ToastAction
+            altText="Log in"
+            onClick={() => router.push("/auth/sign-up")}
+          >
+            Log in
+          </ToastAction>
+        );
+      }
+
+      toast(err);
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -70,7 +106,7 @@ export function LogInForm() {
           )}
         />
 
-        <SubmitButton isLoading={false} text="Submit" />
+        <SubmitButton isLoading={isLoading} text="Log in" />
       </form>
     </Form>
   );

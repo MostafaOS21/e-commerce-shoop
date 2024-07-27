@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -58,6 +64,30 @@ export class AuthService {
         username: user.username,
       },
       message: 'User created',
+    };
+  }
+
+  async logIn(findUserDto: FindUserDto) {
+    const user = await this.userModel.findOne({ email: findUserDto.email });
+
+    if (!user)
+      throw new NotFoundException('User not found', {
+        description: 'Please sign up',
+      });
+
+    const isMatched = await bcrypt.compare(findUserDto.password, user.password);
+
+    if (!isMatched) throw new BadRequestException('Invalid credentials');
+
+    return {
+      data: {
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        username: user.username,
+      },
+      message: 'User logged in',
     };
   }
 }
