@@ -13,6 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import SubmitButton from "../SubmitButton";
 import { baseApi } from "@/lib/baseApi";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "../ui/use-toast";
+import { ApiError } from "@/lib/api-error";
+import { ToastAction } from "../ui/toast";
+import { ApiResponse } from "@/types/api";
+import { IApiUser } from "@/types/user";
+import { logIn } from "@/lib/actions/auth.actions";
 
 const formSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -22,6 +30,11 @@ const formSchema = z.object({
 });
 
 export function SignUpForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
+  const toLogIn = () => router.push("/auth/log-in");
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,11 +49,28 @@ export function SignUpForm() {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      setIsLoading(true);
+
       const res = await baseApi.post("/auth/sign-up", values);
-      const data = await res.data;
+      const data: ApiResponse<IApiUser> = await res.data;
+
+      await logIn(data.data);
+
+      router.push("/");
     } catch (error) {
-      console.log(error);
+      let err: any = ApiError.generate(error);
+
+      if (err.status === 404) {
+        err.action = (
+          <ToastAction altText="Log in" onClick={toLogIn}>
+            Log in
+          </ToastAction>
+        );
+      }
+
+      toast(err);
     }
+    setIsLoading(false);
   }
 
   return (
@@ -109,7 +139,7 @@ export function SignUpForm() {
           )}
         />
 
-        <SubmitButton isLoading={false} text="Submit" />
+        <SubmitButton isLoading={isLoading} text="Submit" />
       </form>
     </Form>
   );

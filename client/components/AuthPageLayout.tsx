@@ -11,7 +11,7 @@ const AuthPageLayout = ({ type }: { type: "sign-in" | "sign-up" }) => {
 
   return (
     <div className="bg-gray-100 dark:bg-slate-900 section-h-full w-full">
-      <div className="container grid grid-cols-1 xl:grid-cols-2 gap-5 h-full py-5">
+      <div className="sub-container grid grid-cols-1 xl:grid-cols-2 gap-5 h-full py-5">
         <div
           className={`hidden xl:flex flex-col justify-between h-full ${
             isSignUp && "order-2"

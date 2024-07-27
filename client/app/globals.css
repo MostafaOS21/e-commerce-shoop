@@ -101,6 +101,7 @@
 }
 
 @layer components {
+  /* Container */
   .container {
     width: 100%;
     margin-right: auto;
@@ -114,10 +115,16 @@
     }
   }
 
+  .sub-container {
+    @apply container mx-auto lg:px-[2rem] xl:px-[3rem];
+  }
+
+  /* Underline */
   .underline-primary {
     @apply relative z-20 before:absolute before:content-[''] before:w-full before:h-2 before:rounded-full before:bg-primary/75 before:z-[-1] before:bottom-0 before:-rotate-[1deg];
   }
 
+  /* Overlay */
   .overlay {
     @apply absolute inset-0 bg-black bg-opacity-45 z-10;
   }
