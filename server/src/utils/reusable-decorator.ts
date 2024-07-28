@@ -3,6 +3,17 @@
 import { applyDecorators, HttpCode } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+const default_api_responses = [
+  {
+    status: 400,
+    description: 'Bad request',
+  },
+  {
+    status: 409,
+    description: 'Conflict',
+  },
+];
+
 export function ReusableDecorator({
   httpCode,
   responses,
@@ -13,11 +24,12 @@ export function ReusableDecorator({
     description: string;
   }[];
 }) {
-  const apiResponses = responses.map(({ status, description }) =>
-    ApiResponse({
-      status,
-      description,
-    }),
+  const apiResponses = [...responses, ...default_api_responses].map(
+    ({ status, description }) =>
+      ApiResponse({
+        status,
+        description,
+      }),
   );
 
   return applyDecorators(...apiResponses, HttpCode(httpCode));

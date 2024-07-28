@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { LogInForm } from "@/components/forms/LogInForm";
 import { SignUpForm } from "./forms/SignUpForm";
+import { AdminForm } from "./forms/AdminForm";
 
 const AuthPageLayout = ({ type }: { type: "sign-in" | "sign-up" }) => {
   const isSignUp = type === "sign-up";
@@ -28,7 +29,7 @@ const AuthPageLayout = ({ type }: { type: "sign-in" | "sign-up" }) => {
             </h2>
           </div>
 
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center space-y-2">
             <p>
               {isSignUp
                 ? "Already have an account?"
@@ -46,6 +47,10 @@ const AuthPageLayout = ({ type }: { type: "sign-in" | "sign-up" }) => {
                 {isSignUp ? "Log in" : "Create an account"} <ArrowRightIcon />
               </Link>
             </Button>
+
+            <p className="text-sm">
+              <span>Are an admin?</span> <AdminForm />
+            </p>
           </div>
 
           <div className="relative h-64 grid place-content-center overflow-hidden rounded-md">

@@ -1,4 +1,10 @@
-import { Controller, Post, Body, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  NotFoundException,
+  Query,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,9 +23,12 @@ export class AuthController {
     return this.authService.create(createUserDto);
   }
 
-  @Post('c')
+  @Post('log-in')
   @ReusableDecorator({ httpCode: 200, responses: createUserSwagger })
   async logIn(@Body() findUserDto: FindUserDto) {
     return this.authService.logIn(findUserDto);
   }
+
+  @Post('admin')
+  @ReusableDecorator({ httpCode: 200, responses: createUserSwagger })
 }

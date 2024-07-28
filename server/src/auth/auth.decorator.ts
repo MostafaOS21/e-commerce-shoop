@@ -3,12 +3,11 @@ export const createUserSwagger = [
     status: 201,
     description: 'User created',
   },
+];
+
+export const findUserSwagger = [
   {
-    status: 400,
-    description: 'Bad request',
-  },
-  {
-    status: 409,
-    description: 'Conflict',
+    status: 200,
+    description: 'User found',
   },
 ];

@@ -142,4 +142,13 @@
   .section-h-full {
     height: var(--minus-header-height);
   }
+
+  /* OTP */
+  .otp-container {
+    @apply flex gap-2 justify-between w-full;
+  }
+
+  .otp-slot {
+    @apply size-16 border-2 text-3xl;
+  }
 }
