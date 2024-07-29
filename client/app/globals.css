@@ -132,7 +132,7 @@
 
 @layer utilities {
   .btn-icon-container {
-    @apply flex gap-2;
+    @apply flex gap-2 items-center;
   }
 
   .header {
@@ -150,5 +150,10 @@
 
   .otp-slot {
     @apply size-16 border-2 text-3xl;
+  }
+
+  /* Logo */
+  .logo {
+    @apply dark:invert;
   }
 }

@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
+import { Separator } from "@/components/ui/separator";
+import DashboardSideMenu from "./DashboardSideMenu";
 
 export const metadata = (): Metadata => {
   return {
@@ -13,5 +15,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <div className="container grid grid-cols-[250px_5px_1fr]">
+      <DashboardSideMenu />
+      <Separator className="w-[1px] h-full" />
+      {children}
+    </div>
+  );
 }

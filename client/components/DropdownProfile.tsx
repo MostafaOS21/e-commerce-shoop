@@ -10,8 +10,9 @@ import {
 import { ChevronDown, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { logOut } from "@/lib/actions/auth.actions";
+import Link from "next/link";
 
-export default function DropdownProfile() {
+export default function DropdownProfile({ isAdmin }: { isAdmin: boolean }) {
   const handleLogOut = async () => {
     console.log("Logging out...");
     await logOut();
@@ -26,6 +27,12 @@ export default function DropdownProfile() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full font-medium">
         <DropdownMenuSeparator />
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard">Dashboard</Link>
+          </DropdownMenuItem>
+        )}
+
         <DropdownMenuItem>Profile</DropdownMenuItem>
 
         <DropdownMenuItem

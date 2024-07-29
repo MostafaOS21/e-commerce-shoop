@@ -11,7 +11,7 @@ import DropdownProfile from "./DropdownProfile";
 
 const Header = () => {
   return (
-    <header className="border-b">
+    <header className="border-b" id="mainHeader">
       <div className="container flex items-center justify-between gap-5">
         <Link href="/">
           <Image
@@ -19,7 +19,7 @@ const Header = () => {
             width={220}
             height={220}
             alt="logo"
-            className="size-[75px] dark:invert"
+            className="size-[75px] logo"
           />
         </Link>
 
@@ -54,7 +54,11 @@ const AuthButtons = async () => {
     </Button>
   );
 
-  return session?.user ? <DropdownProfile /> : logInButton;
+  return session?.user ? (
+    <DropdownProfile isAdmin={session?.user?.role === "admin"} />
+  ) : (
+    logInButton
+  );
 };
 
 export default Header;
