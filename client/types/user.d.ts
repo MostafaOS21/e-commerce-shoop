@@ -8,6 +8,7 @@ export interface IUser {
   lastLogin: Date;
   isDeleted: boolean;
   totalPurchase: number;
+  role: "user" | "admin";
 }
 
 export interface IApiUser

@@ -22,4 +22,10 @@ export class FindUserDto {
     example: 'password',
   })
   password: string;
+
+  @ApiProperty({
+    name: 'passkey',
+    description: 'Admin passkey',
+  })
+  passkey?: string;
 }

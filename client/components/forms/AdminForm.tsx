@@ -61,10 +61,22 @@ export function AdminForm() {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      setIsLoading(true);
+
       const formData = {
         email: values.email,
         passkey,
       };
+
+      const res = await baseApi.post<ApiResponse<IApiUser>>(
+        "/auth/admin",
+        formData
+      );
+      const data = res.data.data;
+
+      await logIn(data);
+
+      router.push("/dashboard");
     } catch (error) {
       let err: any = ApiError.generate(error);
 
@@ -119,45 +131,38 @@ export function AdminForm() {
               )}
             />
 
-            <FormItem>
-              <FormLabel>Passkey</FormLabel>
-              <FormControl>
-                <>
-                  <InputOTP
-                    maxLength={6}
-                    onChange={setPasskey}
-                    defaultValue={passkey}
-                  >
-                    <InputOTPGroup className="otp-container">
-                      <InputOTPSlot className="otp-slot" index={0} />
-                      <InputOTPSlot className="otp-slot" index={1} />
-                      <InputOTPSlot className="otp-slot" index={2} />
-                      <InputOTPSlot className="otp-slot" index={3} />
-                      <InputOTPSlot className="otp-slot" index={4} />
-                      <InputOTPSlot className="otp-slot" index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
+            <Label>Passkey</Label>
+            <InputOTP
+              maxLength={6}
+              onChange={setPasskey}
+              defaultValue={passkey}
+            >
+              <InputOTPGroup className="otp-container">
+                <InputOTPSlot className="otp-slot" index={0} />
+                <InputOTPSlot className="otp-slot" index={1} />
+                <InputOTPSlot className="otp-slot" index={2} />
+                <InputOTPSlot className="otp-slot" index={3} />
+                <InputOTPSlot className="otp-slot" index={4} />
+                <InputOTPSlot className="otp-slot" index={5} />
+              </InputOTPGroup>
+            </InputOTP>
 
-                  <div className="text-center text-sm">
-                    {passkey === "" ? (
-                      <>Enter the passkey.</>
-                    ) : (
-                      <>You entered: {passkey}</>
-                    )}
-                  </div>
-                </>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-
-            <SubmitButton
-              isLoading={isLoading}
-              text="Log in"
-              isDisabled={!passkey}
-            />
-            <AlertDialogCancel asChild className="w-full">
-              <Button variant={"secondary"}>Cancel</Button>
-            </AlertDialogCancel>
+            <div className="flex items-center gap-3">
+              <AlertDialogCancel
+                asChild
+                className="w-full"
+                disabled={isLoading}
+              >
+                <Button variant={"secondary"} type="reset">
+                  Cancel
+                </Button>
+              </AlertDialogCancel>
+              <SubmitButton
+                isLoading={isLoading}
+                text="Log in"
+                isDisabled={!passkey}
+              />
+            </div>
           </form>
         </Form>
       </AlertDialogContent>

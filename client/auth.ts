@@ -29,6 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email;
         token.avatar = user.avatar;
         token.createdAt = user.createdAt;
+        token.role = user?.role === "admin" ? "admin" : "user";
       }
 
       return token;

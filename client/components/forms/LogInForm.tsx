@@ -59,10 +59,10 @@ export function LogInForm() {
       if (err.status === 404) {
         err.action = (
           <ToastAction
-            altText="Log in"
+            altText="Sign up"
             onClick={() => router.push("/auth/sign-up")}
           >
-            Log in
+            Sign up
           </ToastAction>
         );
       }

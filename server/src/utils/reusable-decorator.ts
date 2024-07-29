@@ -1,7 +1,7 @@
 // reusable decorator
 
 import { applyDecorators, HttpCode } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiResponse } from '@nestjs/swagger';
 
 const default_api_responses = [
   {

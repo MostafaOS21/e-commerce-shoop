@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ReusableDecorator } from 'src/utils/reusable-decorator';
 import { createUserSwagger } from './auth.decorator';
 import { FindUserDto } from './dto/find-user.dto';
+import { FindAdminDto } from './dto/find-admin.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -31,4 +32,7 @@ export class AuthController {
 
   @Post('admin')
   @ReusableDecorator({ httpCode: 200, responses: createUserSwagger })
+  async admin(@Body() findAdminDto: FindAdminDto) {
+    return this.authService.admin(findAdminDto);
+  }
 }

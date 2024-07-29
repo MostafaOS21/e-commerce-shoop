@@ -1,5 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
 @Schema()
 class User {
   @Prop({ required: true, unique: true })
@@ -28,6 +33,9 @@ class User {
 
   @Prop({ type: Number, default: 0 })
   totalPurchase: number;
+
+  @Prop({ type: String, default: UserRole.USER })
+  role: UserRole;
 
   // TODO: Make default avatar
   @Prop({ default: '' })

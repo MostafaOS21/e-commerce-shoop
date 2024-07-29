@@ -1,3 +1,4 @@
+import { FindAdminDto } from './dto/find-admin.dto';
 import {
   BadRequestException,
   Injectable,
@@ -6,10 +7,11 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { FindUserDto } from './dto/find-user.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +39,7 @@ export class AuthService {
           email: user.email,
           avatar: user.avatar,
           username: user.username,
+          role: user.role,
         },
         message: 'User updated',
       };
@@ -86,8 +89,39 @@ export class AuthService {
         email: user.email,
         avatar: user.avatar,
         username: user.username,
+        role: user.role,
       },
       message: 'User logged in',
+    };
+  }
+
+  async admin(findAdminDto: FindAdminDto) {
+    const { passkey, email } = findAdminDto;
+    const isSamePasskey = process.env.passkey === passkey;
+
+    if (!isSamePasskey) throw new BadRequestException('Invalid passkey');
+
+    let user = await this.userModel.findOne({ email });
+
+    if (!user) {
+      user = new this.userModel({ email });
+      user.password = uuidv4();
+      user.username = '_admin' + user.email.split('@')[0] + user._id.toString();
+      user.role = UserRole.ADMIN;
+      user.name = user.email.split('@')[0];
+      await user.save();
+    }
+
+    return {
+      data: {
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        username: user.username,
+        role: 'admin',
+      },
+      message: 'Admin logged in',
     };
   }
 }
