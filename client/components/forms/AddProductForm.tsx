@@ -5,7 +5,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,8 +18,6 @@ import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { ApiError } from "@/lib/api-error";
 import { ToastAction } from "../ui/toast";
-import { ApiResponse } from "@/types/api";
-import { IApiUser } from "@/types/user";
 import {
   Select,
   SelectContent,
@@ -28,8 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { logIn } from "@/lib/actions/auth.actions";
-import Link from "next/link";
+
 import {
   beautyAndPersonalCareTypes,
   categories,
@@ -38,6 +34,8 @@ import {
   healthAndWellnessTypes,
   homeAndKitchenTypes,
 } from "@/lib/constants/products_types";
+import { Textarea } from "../ui/textarea";
+import AddImageUploadDialog from "../AddImageUploadDialog";
 
 const formSchema = z.object({
   category: z.string({
@@ -50,6 +48,12 @@ const formSchema = z.object({
     .string()
     .min(3, "Title must be at least 3 characters")
     .max(80, "Title must be at max 80 characters"),
+  price: z.number().min(1, "Price must be at least 1"),
+  quantity: z.number().min(5, "Quantity must be at least 5"),
+  description: z
+    .string()
+    .min(3, "Description must be at least 3 characters")
+    .max(500, "Description must be at max 500 characters"),
 });
 
 export function AddProductForm() {
@@ -57,6 +61,9 @@ export function AddProductForm() {
   const router = useRouter();
   const { toast } = useToast();
   const toLogIn = () => router.push("/auth/log-in");
+  const [images, setImages] = useState<Record<string, string[]>>({
+    default: [],
+  });
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,6 +72,9 @@ export function AddProductForm() {
       category: "",
       subCategory: "",
       title: "",
+      price: 0,
+      quantity: 0,
+      description: "",
     },
   });
 
@@ -140,48 +150,51 @@ export function AddProductForm() {
           )}
         />
 
+        <div className="grid-2">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input placeholder="At least 1$" type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input placeholder="At least 5" type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
-          name="title"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="Title" type="text" {...field} />
+                <Textarea placeholder="Description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+        <AddImageUploadDialog setImages={setImages} images={images} />
 
         <SubmitButton
           isLoading={isLoading}
