@@ -16,7 +16,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container grid grid-cols-[250px_5px_1fr]">
+    <div className="px-3 grid grid-cols-[250px_5px_1fr]">
       <DashboardSideMenu />
       <Separator className="w-[1px] h-full" />
       {children}

@@ -34,6 +34,7 @@ export default function DropdownProfile({ isAdmin }: { isAdmin: boolean }) {
         )}
 
         <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Wishlist</DropdownMenuItem>
 
         <DropdownMenuItem
           className="text-red-600 hover:!text-red-700"

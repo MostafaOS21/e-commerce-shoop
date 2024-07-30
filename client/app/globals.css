@@ -132,7 +132,7 @@
 
 @layer utilities {
   .btn-icon-container {
-    @apply flex gap-2 items-center;
+    @apply flex gap-2 items-center justify-start;
   }
 
   .header {

@@ -5,7 +5,6 @@ import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import clsx from "clsx";
 import { Separator } from "./ui/separator";
 
 const unorderedList = "flex flex-col gap-2";
@@ -22,20 +21,19 @@ const SideMenuItems = () => {
 
         <ul className={unorderedList}>
           {dashboard_main_routes.map((route, index) => (
-            <Button
-              asChild
-              variant={path === route.href ? "default" : "ghost"}
-              key={index}
-            >
-              <li>
+            <li key={index}>
+              <Button
+                asChild
+                variant={path === route.href ? "default" : "ghost"}
+              >
                 <Link
                   href={route.href}
                   className="btn-icon-container block w-full h-full"
                 >
                   <route.icon /> {route.title}
                 </Link>
-              </li>
-            </Button>
+              </Button>
+            </li>
           ))}
         </ul>
       </div>
@@ -47,20 +45,19 @@ const SideMenuItems = () => {
 
         <ul className={unorderedList}>
           {dashboard_tools_routes.map((route, index) => (
-            <Button
-              asChild
-              variant={path === route.href ? "default" : "ghost"}
-              key={index}
-            >
-              <li>
+            <li key={index}>
+              <Button
+                asChild
+                variant={path === route.href ? "default" : "ghost"}
+              >
                 <Link
                   href={route.href}
                   className="btn-icon-container block w-full h-full"
                 >
                   <route.icon /> {route.title}
                 </Link>
-              </li>
-            </Button>
+              </Button>
+            </li>
           ))}
         </ul>
       </div>

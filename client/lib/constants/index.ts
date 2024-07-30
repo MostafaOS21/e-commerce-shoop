@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 export const dashboard_main_routes = [
   {
-    title: "Dashboard",
+    title: "Home",
     href: "/dashboard",
     icon: House,
   },
