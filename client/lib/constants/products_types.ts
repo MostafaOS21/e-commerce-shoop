@@ -5,7 +5,7 @@ export const categories = [
   "Home and Kitchen",
   "Beauty and Personal Care",
   "Health and Wellness",
-];
+] as const;
 
 // Each category has a list of types that are available for that category
 export const electronicsTypes = [

@@ -1,62 +1,33 @@
-import Image from "next/image";
 import React from "react";
-
-// export const categories = [
-//   "Electronics",
-//   "Home and Kitchen",
-//   "Fashion and Apparel",
-//   "Beauty and Personal Care",
-//   "Health and Wellness",
-// ];
-
-// .bento-grid {
-//   @apply grid gap-4;
-// }
-
-// .bento-element {
-//   @apply overflow-hidden relative rounded-lg shadow-md;
-// }
+import ProductsBentoGrid from "./ProductsBentoGrid";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Plus } from "lucide-react";
+import { headers } from "next/headers";
 
 export default function Products() {
+  const headersList = headers();
+  const domain = headersList.get("host") || "";
+  const protocol = headersList.get("x-forwarded-proto") || "";
+  const fullUrl = headersList.get("referer") || "";
+  const path = fullUrl.replace(`${protocol}://${domain}`, "");
+
   return (
     <div>
-      <div className="header">
-        <h3>All categories</h3>
-        <p>here you can find all the categories of products that we have</p>
-      </div>
+      <section className="flex items-center justify-between py-5 border px-3 rounded-lg bg-gradient-to-r from-green-200 to-blue-200">
+        <p>
+          Add a new product to your store. You can add multiple products at
+          once.
+        </p>
 
-      <section className="bento-grid grid-rows-3 grid-cols-3">
-        {/* Fashion and Apparel */}
-        <div className="bento-element row-span-2">
-          <span className="overlay"></span>
-          <Image
-            src="/assets/products_categories/Fashion and Apparel.jpg"
-            width={800}
-            height={800}
-            alt="Fashion and Apparel"
-          />
-        </div>
-        {/* Electronics */}
-        <div className="bento-element col-span-2">
-          <span className="overlay"></span>
-          <Image
-            src="/assets/products_categories/Electronics.jpg"
-            width={800}
-            height={800}
-            alt="Electronics"
-          />
-        </div>
-        {/* Home and Kitchen */}
-        <div className="bento-element col-span-2">
-          <span className="overlay"></span>
-          <Image
-            src="/assets/products_categories/Home and Kitchen.jpg"
-            width={800}
-            height={800}
-            alt="Home and Kitchen"
-          />
-        </div>
+        <Button asChild className="rounded-full p-3 h-fit">
+          <Link href={path + "/add"}>
+            <Plus />
+          </Link>
+        </Button>
       </section>
+
+      <ProductsBentoGrid path={path} />
     </div>
   );
 }

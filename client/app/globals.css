@@ -106,8 +106,10 @@
     width: 100%;
     margin-right: auto;
     margin-left: auto;
-    padding-right: 0.5rem /* 32px */;
-    padding-left: 0.5rem /* 32px */;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   @media (min-width: 1400px) {
     .container {
@@ -163,7 +165,15 @@
   }
 
   .bento-element {
-    @apply overflow-hidden relative rounded-lg shadow-md cursor-pointer h-[230px];
+    @apply overflow-hidden relative rounded-lg shadow-md cursor-pointer h-[180px];
+  }
+
+  .bento-element .centre-p {
+    @apply absolute -translate-x-1/2 -translate-y-1/2 z-10 top-1/2 left-1/2 text-2xl w-full flex items-center justify-center font-semibold text-white py-2 px-2 bg-opacity-50 backdrop-blur-md transition-colors;
+  }
+
+  .bento-element:hover .centre-p {
+    @apply bg-opacity-65;
   }
 
   .bento-element img {
