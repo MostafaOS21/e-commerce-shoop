@@ -19,7 +19,7 @@ export default function DashboardLayout({
     <div className="px-3 grid grid-cols-[250px_5px_1fr]">
       <DashboardSideMenu />
       <Separator className="w-[1px] h-full" />
-      {children}
+      <div className="sub-container">{children}</div>
     </div>
   );
 }

@@ -156,4 +156,21 @@
   .logo {
     @apply dark:invert;
   }
+
+  /* Bento grid */
+  .bento-grid {
+    @apply grid gap-4;
+  }
+
+  .bento-element {
+    @apply overflow-hidden relative rounded-lg shadow-md cursor-pointer h-[230px];
+  }
+
+  .bento-element img {
+    @apply object-cover w-full h-full transition-transform duration-700;
+  }
+
+  .bento-element:hover img {
+    @apply scale-105;
+  }
 }
