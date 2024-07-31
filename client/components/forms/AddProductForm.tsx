@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import SubmitButton from "../SubmitButton";
-import { baseApi } from "@/lib/baseApi";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
@@ -34,7 +33,6 @@ import {
   healthAndWellnessTypes,
   homeAndKitchenTypes,
 } from "@/lib/constants/products_types";
-import { Textarea } from "../ui/textarea";
 import AddImageUploadDialog from "../AddImageUploadDialog";
 
 const formSchema = z.object({
@@ -48,12 +46,8 @@ const formSchema = z.object({
     .string()
     .min(3, "Title must be at least 3 characters")
     .max(80, "Title must be at max 80 characters"),
-  price: z.number().min(1, "Price must be at least 1"),
-  quantity: z.number().min(5, "Quantity must be at least 5"),
-  description: z
-    .string()
-    .min(3, "Description must be at least 3 characters")
-    .max(500, "Description must be at max 500 characters"),
+  price: z.string().min(1, "Price must be at least 1$"),
+  quantity: z.string().min(1, "Quantity must be at least 1"),
 });
 
 export function AddProductForm() {
@@ -61,9 +55,7 @@ export function AddProductForm() {
   const router = useRouter();
   const { toast } = useToast();
   const toLogIn = () => router.push("/auth/log-in");
-  const [images, setImages] = useState<Record<string, string[]>>({
-    default: [],
-  });
+  const [images, setImages] = useState<File[]>([]);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,16 +64,30 @@ export function AddProductForm() {
       category: "",
       subCategory: "",
       title: "",
-      price: 0,
-      quantity: 0,
-      description: "",
+      price: "",
+      quantity: "",
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (images.length < 4) {
+      return toast({
+        description: "You need to upload at least 4 images",
+      });
+    }
+
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
+      const formData = new FormData();
+
+      formData.append("category", values.category);
+      formData.append("subCategory", values.subCategory);
+      formData.append("title", values.title);
+      formData.append("price", values.price.toString());
+      formData.append("quantity", values.quantity.toString());
+
+      console.log(formData.get("images"));
     } catch (error) {
       let err: any = ApiError.generate(error);
 
@@ -97,8 +103,6 @@ export function AddProductForm() {
       setIsLoading(false);
     }
   }
-
-  console.log();
 
   return (
     <Form {...form}>
@@ -179,20 +183,6 @@ export function AddProductForm() {
             )}
           />
         </div>
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Description" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <AddImageUploadDialog setImages={setImages} images={images} />
 
