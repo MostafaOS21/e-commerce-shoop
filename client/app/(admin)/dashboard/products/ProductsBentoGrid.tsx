@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const ProductsBentoGrid = ({ path }: { path: string }) => {
+const ProductsBentoGrid = () => {
   return (
     <>
       <div className="header">
@@ -13,7 +13,7 @@ const ProductsBentoGrid = ({ path }: { path: string }) => {
       <section className="bento-grid grid-rows-3 grid-cols-3">
         {/* Fashion and Apparel */}
         <Link
-          href={path + "/fashion-and-apparel"}
+          href={"/dashboard/products/fashion-and-apparel"}
           className="bento-element row-span-3 !h-full"
         >
           <span className="overlay"></span>
@@ -27,7 +27,10 @@ const ProductsBentoGrid = ({ path }: { path: string }) => {
           <p className="centre-p bg-[#847359]">Fashion and Apparel</p>
         </Link>
         {/* Electronics */}
-        <Link href={path + "/electronics"} className="bento-element col-span-2">
+        <Link
+          href={"/dashboard/products/electronics"}
+          className="bento-element col-span-2"
+        >
           <span className="overlay"></span>
           <Image
             src="/assets/products_categories/Electronics.jpg"
@@ -40,7 +43,7 @@ const ProductsBentoGrid = ({ path }: { path: string }) => {
         </Link>
         {/* Home and Kitchen */}
         <Link
-          href={path + "/home-and-kitchen"}
+          href={"/dashboard/products/home-and-kitchen"}
           className="bento-element col-span-2"
         >
           <span className="overlay"></span>
@@ -55,7 +58,7 @@ const ProductsBentoGrid = ({ path }: { path: string }) => {
         </Link>
         {/* Beauty and Personal Care */}
         <Link
-          href={path + "/beauty-and-personal-care"}
+          href={"/dashboard/products/beauty-and-personal-care"}
           className="bento-element"
         >
           <span className="overlay"></span>
@@ -69,7 +72,10 @@ const ProductsBentoGrid = ({ path }: { path: string }) => {
           <p className="centre-p bg-[#193204]">Beauty and Personal Care</p>
         </Link>
         {/* Health and Wellness */}
-        <Link href={path + "/health-and-wellness"} className="bento-element">
+        <Link
+          href={"/dashboard/products/health-and-wellness"}
+          className="bento-element"
+        >
           <span className="overlay"></span>
           <Image
             src="/assets/products_categories/Health and Wellness.jpg"

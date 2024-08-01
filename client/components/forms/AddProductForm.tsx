@@ -55,7 +55,7 @@ export function AddProductForm() {
   const router = useRouter();
   const { toast } = useToast();
   const toLogIn = () => router.push("/auth/log-in");
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<string[]>([]);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,15 +79,6 @@ export function AddProductForm() {
 
     try {
       // setIsLoading(true);
-      const formData = new FormData();
-
-      formData.append("category", values.category);
-      formData.append("subCategory", values.subCategory);
-      formData.append("title", values.title);
-      formData.append("price", values.price.toString());
-      formData.append("quantity", values.quantity.toString());
-
-      console.log(formData.get("images"));
     } catch (error) {
       let err: any = ApiError.generate(error);
 

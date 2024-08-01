@@ -1,5 +1,6 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -9,14 +10,16 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CloudUpload, Plus, X } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
-import { wrapFileName } from "@/lib/utils";
+import { getAssetsUrl, wrapFileName } from "@/lib/utils";
+import { baseApi } from "@/lib/baseApi";
+import { ApiResponse } from "@/types/api";
 
 interface AddImageUploadDialogProps {
-  images: File[];
-  setImages: Dispatch<SetStateAction<File[]>>;
+  images: string[];
+  setImages: Dispatch<SetStateAction<string[]>>;
 }
 
 const AddImageUploadDialog = ({
@@ -24,37 +27,58 @@ const AddImageUploadDialog = ({
   setImages,
 }: AddImageUploadDialogProps) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
-  const [currentFilesSrc, setCurrentFilesSrc] = useState<string[]>([]);
-  // const [currentColor, setCurrentColor] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  const onSaveChanges = () => {
+  const closeModal = () => {
+    closeBtnRef.current?.click();
+  };
+
+  const onSaveChanges = async () => {
     if (acceptedFiles.length) {
-      const reader = new FileReader();
+      try {
+        setIsUploading(true);
 
-      reader.onload = () => {
-        setCurrentFilesSrc((prev) => [...prev, reader.result as string]);
-      };
+        const file = acceptedFiles[0];
+        const formData = new FormData();
 
-      reader.readAsDataURL(acceptedFiles[0]);
-      setImages((prev) => [...prev, acceptedFiles[0]]);
+        formData.append("image", file);
 
-      acceptedFiles.splice(0, 1);
+        const res = await baseApi.post(
+          "/dashboard/product/upload-image",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const data: ApiResponse<string> = await res.data;
+
+        console.log(data);
+
+        setImages((prev) => [...prev, getAssetsUrl(data.data)]);
+
+        closeModal();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
   return (
     <div className="flex items-center gap-5 flex-wrap">
-      {currentFilesSrc.length > 0 && (
+      {images.length > 0 && (
         <ul className="flex items-center gap-5 flex-wrap">
-          {currentFilesSrc.map((src, index) => (
+          {images.map((src, index) => (
             <li key={index} className="h-24 w-32 relative ">
               <Button
                 className="absolute grid place-content-center h-fit p-2 right-0 shadow-lg rounded-full"
                 variant={"destructive"}
                 onClick={() => {
-                  setCurrentFilesSrc((prev) =>
-                    prev.filter((_, i) => i !== index)
-                  );
                   setImages((prev) => prev.filter((_, i) => i !== index));
                 }}
               >
@@ -78,7 +102,7 @@ const AddImageUploadDialog = ({
           <Button
             variant="outline"
             className="border-dashed h-24 w-32 flex flex-col gap-2"
-            disabled={currentFilesSrc.length === 10}
+            disabled={images.length === 10}
           >
             <Plus size={16} />
             Add Image
@@ -98,6 +122,7 @@ const AddImageUploadDialog = ({
               asChild
               className="cursor-pointer relative border-2 h-[230px] border-dashed flex flex-col gap-5"
               variant={"ghost"}
+              disabled={isUploading}
             >
               <div {...getRootProps({ className: "dropzone" })}>
                 <CloudUpload size={32} className="mx-auto" />
@@ -144,12 +169,24 @@ const AddImageUploadDialog = ({
             </div> */}
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="grid grid-cols-2 gap-4 w-full">
+            <DialogClose asChild>
+              <Button
+                ref={closeBtnRef}
+                variant={"outline"}
+                disabled={isUploading}
+              >
+                Cancel
+              </Button>
+            </DialogClose>
+
             <Button
               type="submit"
               onClick={onSaveChanges}
               disabled={
-                acceptedFiles.length === 0 || currentFilesSrc.length === 10
+                acceptedFiles.length === 0 ||
+                images.length === 10 ||
+                isUploading
               }
             >
               Save changes

@@ -12,7 +12,7 @@ import DropdownProfile from "./DropdownProfile";
 const Header = () => {
   return (
     <header className="border-b" id="mainHeader">
-      <div className="container flex items-center justify-between gap-5">
+      <div className="container flex items-center justify-between gap-5 py-0">
         <Link href="/">
           <Image
             src="/assets/images/logo-light.png"

@@ -15,3 +15,8 @@ export const wrapFileName = (fileName: string, length: number = 15) => {
   const [name, ext] = fileName.split(".");
   return `${sliceText(name, length)}.${ext}`;
 };
+
+// Get assets URL
+export const getAssetsUrl = (path: string) => {
+  return `${process.env.NEXT_PUBLIC_BACKEND_UPLOADS_URL}/${path}`;
+};

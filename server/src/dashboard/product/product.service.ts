@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Product } from './entities/product.entity';
+import { Model } from 'mongoose';
+import { Image } from 'src/entities/image.entity';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
-  }
+  constructor(
+    @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(Image.name) private imageModel: Model<Image>,
+  ) {}
 
-  findAll() {
-    return `This action returns all product`;
-  }
+  // Upload image
+  async uploadImage(file: Express.Multer.File) {
+    const image = await this.imageModel.create({
+      url: '/uploads/products/' + file.filename,
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
-  }
-
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+    return {
+      message: 'Image uploaded successfully',
+      data: image.url,
+    };
   }
 }
