@@ -56,8 +56,6 @@ const AddImageUploadDialog = ({
 
         const data: ApiResponse<string> = await res.data;
 
-        console.log(data);
-
         setImages((prev) => [...prev, getAssetsUrl(data.data)]);
 
         closeModal();

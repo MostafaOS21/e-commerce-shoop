@@ -8,8 +8,6 @@ export default auth((req) => {
 
   const isAdmin = req.auth?.user?.role === "admin";
 
-  console.log(req.auth);
-
   if (req.auth && isAuthRoute) {
     return Response.redirect(newUrl);
   }
