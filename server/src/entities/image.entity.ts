@@ -6,7 +6,7 @@ class Image {
   url: string;
 
   @Prop({ default: Date.now })
-  expirationDate: Date;
+  createdAt: Date;
 }
 
 const ImageSchema = SchemaFactory.createForClass(Image);

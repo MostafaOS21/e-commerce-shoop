@@ -16,6 +16,9 @@ import Image from "next/image";
 import { getAssetsUrl, wrapFileName } from "@/lib/utils";
 import { baseApi } from "@/lib/baseApi";
 import { ApiResponse } from "@/types/api";
+import { useToast } from "./ui/use-toast";
+import { ApiError } from "@/lib/api-error";
+import { MouseEvent } from "react";
 
 interface AddImageUploadDialogProps {
   images: string[];
@@ -29,6 +32,8 @@ const AddImageUploadDialog = ({
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
   const [isUploading, setIsUploading] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const deleteBtnRef = useRef<HTMLButtonElement>(null);
+  const { toast } = useToast();
 
   const closeModal = () => {
     closeBtnRef.current?.click();
@@ -44,26 +49,52 @@ const AddImageUploadDialog = ({
 
         formData.append("image", file);
 
-        const res = await baseApi.post(
-          "/dashboard/product/upload-image",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const res = await baseApi.post("/dashboard/product/image", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         const data: ApiResponse<string> = await res.data;
 
-        setImages((prev) => [...prev, getAssetsUrl(data.data)]);
+        console.log(getAssetsUrl(data.data));
 
+        setImages((prev) => [...prev, data.data]);
+
+        acceptedFiles.splice(0, 1);
         closeModal();
       } catch (error) {
-        console.log(error);
+        toast({
+          ...ApiError.generate(error),
+        });
       } finally {
         setIsUploading(false);
       }
+    }
+  };
+
+  const handleDeleteImage = async (
+    e: MouseEvent<HTMLButtonElement>,
+    url: string
+  ) => {
+    e.preventDefault();
+
+    console.log(url);
+
+    try {
+      deleteBtnRef.current!.disabled = true;
+
+      const res = await baseApi.delete(`/dashboard/product/image/${url}`);
+
+      const data: ApiResponse<string> = await res.data;
+
+      setImages((prev) => prev.filter((img) => img !== data.data));
+    } catch (error) {
+      toast({
+        ...ApiError.generate(error),
+      });
+    } finally {
+      deleteBtnRef.current!.disabled = false;
     }
   };
 
@@ -76,15 +107,15 @@ const AddImageUploadDialog = ({
               <Button
                 className="absolute grid place-content-center h-fit p-2 right-0 shadow-lg rounded-full"
                 variant={"destructive"}
-                onClick={() => {
-                  setImages((prev) => prev.filter((_, i) => i !== index));
-                }}
+                onClick={(e) => handleDeleteImage(e, src)}
+                type="button"
+                ref={deleteBtnRef}
               >
                 <X size={16} />
               </Button>
 
               <Image
-                src={src}
+                src={getAssetsUrl(`/products/${src}`)}
                 width={100}
                 height={100}
                 alt={`Product image ${index}#`}
@@ -101,6 +132,7 @@ const AddImageUploadDialog = ({
             variant="outline"
             className="border-dashed h-24 w-32 flex flex-col gap-2"
             disabled={images.length === 10}
+            type="button"
           >
             <Plus size={16} />
             Add Image

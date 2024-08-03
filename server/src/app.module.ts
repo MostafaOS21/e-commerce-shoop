@@ -11,7 +11,7 @@ import { join } from 'path';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '../..', 'public'), // added ../ to get one folder back
     }),
     ConfigModule.forRoot(),
     AuthModule,
