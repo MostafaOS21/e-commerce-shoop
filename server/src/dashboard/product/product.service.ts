@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './entities/product.entity';
 import { Model } from 'mongoose';
 import { Image } from 'src/entities/image.entity';
 import { DeleteImageDto } from './dto/delete-image.dto';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -11,6 +12,22 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(Image.name) private imageModel: Model<Image>,
   ) {}
+
+  // Create product
+  async createProduct(createProductDto: CreateProductDto) {
+    const allImagesLinks = createProductDto.images;
+    // Check if all images exist
+    const images = await this.imageModel.find({ url: { $in: allImagesLinks } });
+    if (images.length !== allImagesLinks.length) {
+      throw new NotFoundException('All images must exist');
+    }
+    // Create product
+    const product = await this.productModel.create(createProductDto);
+    return {
+      message: 'Product created successfully',
+      data: product,
+    };
+  }
 
   // Upload image
   async uploadImage(file: Express.Multer.File) {

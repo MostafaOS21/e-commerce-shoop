@@ -30,4 +30,14 @@ export class CreateProductDto {
   })
   @Transform(({ value }) => parseInt(value))
   quantity: number;
+
+  // list of images links
+  @ApiProperty({
+    description: 'List of images links',
+    example: [
+      'fca14651-f8f6-4e96-9050-635c29ab23b5.png',
+      'zxw62345-r2a3-3w54-3800-184cs5lo23tg.png',
+    ],
+  })
+  images: string[];
 }

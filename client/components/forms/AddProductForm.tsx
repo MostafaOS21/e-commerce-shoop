@@ -34,20 +34,25 @@ import {
   homeAndKitchenTypes,
 } from "@/lib/constants/products_types";
 import AddImageUploadDialog from "../AddImageUploadDialog";
+import { baseApi } from "@/lib/baseApi";
 
 const formSchema = z.object({
-  category: z.string({
-    required_error: "Category is required",
-  }),
-  subCategory: z.string({
-    required_error: "Sub category is required",
-  }),
+  category: z
+    .string({
+      required_error: "Category is required",
+    })
+    .min(1, "Category is required"),
+  subCategory: z
+    .string({
+      required_error: "Sub category is required",
+    })
+    .min(1, "Sub category is required"),
   title: z
     .string()
     .min(3, "Title must be at least 3 characters")
     .max(80, "Title must be at max 80 characters"),
-  price: z.string().min(1, "Price must be at least 1$"),
-  quantity: z.string().min(1, "Quantity must be at least 1"),
+  price: z.coerce.number().min(1, "Price must be at least 1$"),
+  quantity: z.coerce.number().min(5, "Quantity must be at least 5"),
 });
 
 export function AddProductForm() {
@@ -64,8 +69,8 @@ export function AddProductForm() {
       category: "",
       subCategory: "",
       title: "",
-      price: "",
-      quantity: "",
+      price: 0,
+      quantity: 0,
     },
   });
 
@@ -78,7 +83,22 @@ export function AddProductForm() {
     }
 
     try {
-      // setIsLoading(true);
+      setIsLoading(true);
+
+      const reqData = {
+        ...values,
+        images,
+      };
+
+      const res = await baseApi.post("/dashboard/product", reqData);
+      const data = await res.data;
+
+      toast({
+        description: "Product added successfully",
+      });
+
+      form.reset();
+      setImages([]);
     } catch (error) {
       let err: any = ApiError.generate(error);
 
@@ -91,6 +111,7 @@ export function AddProductForm() {
       }
 
       toast(err);
+    } finally {
       setIsLoading(false);
     }
   }
@@ -108,8 +129,9 @@ export function AddProductForm() {
             <FormItem>
               <FormLabel>Category</FormLabel>
               <Select
-                onValueChange={(val) => field.onChange(val)}
+                onValueChange={field.onChange}
                 defaultValue={field.value}
+                name="category"
               >
                 <FormControl>
                   <SelectTrigger>

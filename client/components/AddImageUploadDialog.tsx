@@ -57,8 +57,6 @@ const AddImageUploadDialog = ({
 
         const data: ApiResponse<string> = await res.data;
 
-        console.log(getAssetsUrl(data.data));
-
         setImages((prev) => [...prev, data.data]);
 
         acceptedFiles.splice(0, 1);
