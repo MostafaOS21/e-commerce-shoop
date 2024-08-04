@@ -1,4 +1,5 @@
 import { AddProductForm } from "@/components/forms/AddProductForm";
+import SectionBanner from "@/components/SectionBanner";
 import { Metadata } from "next";
 
 export const metadata = (): Metadata => {
@@ -10,5 +11,14 @@ export const metadata = (): Metadata => {
 };
 
 export default function AddProduct() {
-  return <AddProductForm />;
+  return (
+    <div>
+      <SectionBanner
+        paragraph="Want to add multiple products using (CSV)."
+        href="/dashboard/products/multiple"
+      />
+
+      <AddProductForm />
+    </div>
+  );
 }

@@ -19,6 +19,12 @@ class Product {
 
   @Prop({ required: true })
   images: string[];
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product);
