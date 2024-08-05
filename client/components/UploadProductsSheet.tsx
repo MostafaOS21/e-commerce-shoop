@@ -3,9 +3,38 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "./ui/button";
 import { CloudUpload } from "lucide-react";
 import clsx from "clsx";
+import { useCallback } from "react";
+import Papa from "papaparse";
+import { useToast } from "./ui/use-toast";
 
-export default function UploadProductsSheet() {
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
+interface UploadProductsSheetProps {
+  setTableData: React.Dispatch<React.SetStateAction<string[][]>>;
+  tableData: string[][];
+}
+
+export default function UploadProductsSheet({
+  setTableData,
+  tableData,
+}: UploadProductsSheetProps) {
+  const { toast } = useToast();
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+
+    Papa.parse(file, {
+      complete: (result) => {
+        if (result.data.length === 0) {
+          return toast({
+            description: "No data found in the file",
+          });
+        }
+
+        setTableData(result.data as string[][]);
+      },
+    });
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <div
